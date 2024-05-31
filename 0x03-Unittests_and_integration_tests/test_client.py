@@ -37,6 +37,29 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(test_return,
                              mock_get.return_value.get("repos_url"))
 
+    @patch("client.get_json", return_value=[{"name": "holberton"}])
+    def test_public_repos(self, mock_get):
+        """ to unit-test GithubOrgClient.public_repos """
+        with patch.object(GithubOrgClient,
+                          "_public_repos_url",
+                          new_callable=PropertyMock,
+                          return_value="https://api.github.com/") as mock_pub:
+            test_client = GithubOrgClient("hoberton")
+            test_return = test_client.public_repos()
+            self.assertEqual(test_return, ["holberton"])
+            mock_get.assert_called_once
+            mock_pub.assert_called_once
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+        ])
+    def test_has_license(self, repo, license_key, expected_return):
+        """ to unit-test GithubOrgClient.has_license """
+        test_client = GithubOrgClient("holberton")
+        test_return = test_client.has_license(repo, license_key)
+        self.assertEqual(expected_return, test_return)
+
 
 if __name__ == '__main__':
     unittest.main()
