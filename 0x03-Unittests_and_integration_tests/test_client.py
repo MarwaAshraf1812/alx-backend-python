@@ -12,8 +12,7 @@ from urllib.error import HTTPError
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    '''
-    '''
+    """ Test for GithubOrgClient """
     @parameterized.expand([
         ("google"),
         ("abc"),
@@ -64,7 +63,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
 
 @parameterized_class(
-    ('org_payload', "repo_payload", "expected_repos", "apache2_repos"),
+    ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
     TEST_PAYLOAD
 )
 class TestIntegrationGithubOrgClient(unittest.TestCase):
@@ -80,7 +79,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher.stop()
 
     def test_public_repos(self):
-        """ to unit-test GithubOrgClient.public_repos """
+        """ method to test GithubOrgClient.public_repos """
         test_class = GithubOrgClient("holberton")
         assert True
 
