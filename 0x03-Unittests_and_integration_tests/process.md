@@ -26,4 +26,53 @@ def test_access_nested_map(self, nested_map, path, result):
     - `path`: The sequence of keys to follow in the nested dictionary.
     - `expected`: The expected result of accessing the nested dictionary with the given path.
 
-=================================
+=============================
+task 1
+
+    -- It describes the TestAccessNestedMap
+        class, explaining that it tests the
+        access_nested_map function to ensure
+        it correctly retrieves values from nested
+        dictionaries or raises the expected exceptions.
+
+    @parameterized.expand([
+            ({}, ('a',)),
+            ({'a': 1}, ('a', 'b')),
+        ])
+        def test_access_nested_map_exception(self, nested_map, path):
+            with self.assertRaises(KeyError) as error:
+                access_nested_map(nested_map, path)
+            self.assertEqual(error.exception.args[0], path[-1])
+
+    Example inputs tested:
+    - `{}`, ('a',): Test accessing key 'a' in an empty dictionary should raise a KeyError.
+    - `{'a': 1}, ('a', 'b'): Test accessing key 'b' in {'a': 1} should raise a KeyError.
+
+
+    chatgpt:
+
+    ### Explanation
+
+    In the `test_access_nested_map_exception` method, we use `assertRaises` as a context manager to check if calling `access_nested_map(nested_map, path)` raises a `KeyError`. The `with self.assertRaises(KeyError) as error` block captures the raised `KeyError` and stores it in the `error` variable.
+
+    ```python
+    with self.assertRaises(KeyError) as error:
+        access_nested_map(nested_map, path)
+    ```
+
+    After capturing the exception, we then verify the content of the exception message using `self.assertEqual`.
+
+    ```python
+    self.assertEqual(error.exception.args[0], path[-1])
+    ```
+
+    #### Details:
+
+    - **`error.exception`**: This gives us the actual exception object that was raised (`KeyError` in this case).
+    - **`error.exception.args[0]`**: This accesses the first argument of the exception, which is the error message associated with the exception.
+    - **`path[-1]`**: This retrieves the last element of the `path` tuple, which is the key that caused the `KeyError`.
+
+
+    
+
+   
