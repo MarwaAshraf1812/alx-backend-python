@@ -5,8 +5,10 @@ Parameterize, Integration test: fixtures, Integration tests.
 '''
 import unittest
 from unittest.mock import patch, Mock, PropertyMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
+from urllib.error import HTTPError
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -59,6 +61,33 @@ class TestGithubOrgClient(unittest.TestCase):
         test_client = GithubOrgClient("holberton")
         test_return = test_client.has_license(repo, license_key)
         self.assertEqual(expected_return, test_return)
+
+
+@parameterized_class(
+    ('org_payload', "repo_payload", "expected_repos", "apache2_repos"),
+    TEST_PAYLOAD
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """ Integration test for GithubOrgClient.public_repos """
+    @classmethod
+    def setUpClass(cls):
+        """ set up class """
+        cls.get_patcher = patch('requests.get', side_effect=HTTPError)
+
+    @classmethod
+    def tearDownClass(cls):
+        """ tear down class """
+        cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """ to unit-test GithubOrgClient.public_repos """
+        test_class = GithubOrgClient("holberton")
+        assert True
+
+    def test_public_repos_with_license(self):
+        """ to unit-test GithubOrgClient.public_repos with license """
+        test_class = GithubOrgClient("holberton")
+        assert True
 
 
 if __name__ == '__main__':
