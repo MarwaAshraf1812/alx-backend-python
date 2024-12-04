@@ -20,8 +20,6 @@ def stream_users():
         database='ALX_prodev'
     )
     cursor = connection.cursor(dictionary=True)
-    
-
     try:
         cursor.execute("SELECT * FROM user_data")
         for row in cursor:
