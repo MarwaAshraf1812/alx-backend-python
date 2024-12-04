@@ -22,8 +22,20 @@ def log_queries(func):
         return func(*args, **kwargs)
     return wrapper
 
+
 @log_queries
 def fetch_all_users(query):
+    """
+    Fetches all users from the database while logging the SQL query.
+
+    The query to be executed is expected to be passed as a positional argument
+    or a keyword argument named 'query'. The query is logged before it is
+    executed.
+
+    :param query: The SQL query to execute. If not provided, the first
+        positional argument is used.
+    :return: The results of the query.
+    """
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
     cursor.execute(query)
@@ -33,3 +45,4 @@ def fetch_all_users(query):
 
 #### fetch users while logging the query
 users = fetch_all_users(query="SELECT * FROM users")
+print(users)
