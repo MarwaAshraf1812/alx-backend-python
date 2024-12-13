@@ -26,7 +26,7 @@ async def async_fetch_older_users():
         print(row)
       return rows
     
-async def fetch_CONCURRENTLY():
+async def fetch_concurrently():
   """
   Concurrently fetches all users and all users older than 40 from the users.db
   database, and returns the results as a tuple of two lists.
@@ -35,4 +35,4 @@ async def fetch_CONCURRENTLY():
   return results
 
 if __name__ == "__main__":
-  asyncio.run(fetch_CONCURRENTLY())
+  asyncio.run(fetch_concurrently())
