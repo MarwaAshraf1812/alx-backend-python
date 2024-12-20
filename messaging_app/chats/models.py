@@ -17,7 +17,7 @@ class User(AbstractUser):
 
 class Conversation(models.Model):
   conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-  participants_id = models.ForeignKey(User, related_name='conversations')
+  participants_id = models.ForeignKey(User, related_name='conversations', on_delete=models.CASCADE)
   created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
