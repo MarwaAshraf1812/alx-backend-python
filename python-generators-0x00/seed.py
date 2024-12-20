@@ -8,7 +8,7 @@ def connect_db():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="root",
+        password="root12",
     )
 
 # Create database if it does not exist
@@ -25,7 +25,7 @@ def connect_to_prodev():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="root",
+        passwd="root12",
         database="ALX_prodev"
     )
 
