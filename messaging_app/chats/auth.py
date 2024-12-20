@@ -1,6 +1,6 @@
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-def CustomJWTAuthentication(JWTAuthentication):
+class CustomTokenObtainPairView(TokenObtainPairView):
   def authenticate(self, request):
     result = super().authenticate(request)
 
