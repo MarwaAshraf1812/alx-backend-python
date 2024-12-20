@@ -6,13 +6,19 @@ from .permissions import IsParticipant
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
+    queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
     permission_classes = [IsParticipant]
 
     def get_queryset(self):
-        return Conversation.objects.filter(participants=self.request.user)
+        user = self.request.user
+        if user.is_anonymous:
+            return Conversation.objects.none()
+        
+        return Conversation.objects.filter(participants=user)
 
 class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
     permission_classes = [IsParticipant]
 

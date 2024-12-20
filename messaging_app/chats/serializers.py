@@ -29,12 +29,12 @@ class MessageSerializer(serializers.ModelSerializer):
         return data
 
 class ConversationSerializer(serializers.ModelSerializer):
-    participants = UserSerializer(many=True)
+    participants = UserSerializer(many=True, read_only=True)
     messages = MessageSerializer(many=True, read_only=True)
-    participants_count = serializers.SerializerMethodField()
+    # participants_count = serializers.SerializerMethodField()
     class Meta:
         model = Conversation
         fields = ['conversation_id', 'participants', 'messages', 'created_at']
     
-    def get_participants(self, obj):
-      return obj.participants.count()
+    # def get_participants(self, obj):
+    #   return obj.participants.count()
