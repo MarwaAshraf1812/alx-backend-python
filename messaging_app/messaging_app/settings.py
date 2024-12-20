@@ -16,7 +16,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 import environ
 import os
-
+from datetime import timedelta
 
 env = environ.Env()
 environ.Env.read_env(
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'chats',
 ]
 
@@ -116,11 +117,21 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': [
-    'rest_framework.authentication.SessionAuthentication',
+    # 'rest_framework.authentication.BasicAuthentication',
+    # 'rest_framework.authentication.SessionAuthentication',
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
   ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
 }
 
 # Internationalization
