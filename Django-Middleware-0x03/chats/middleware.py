@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.http.response import HttpResponseForbidden
 import logging
 
 class RequestLoggingMiddleware:
@@ -26,3 +27,19 @@ class RequestLoggingMiddleware:
         # Process the request and get the response
         response = self.get_response(request)
         return response
+
+class RestrictAccessByTimeMiddleware:
+    """
+    implement a middleware that restricts access to
+    the messaging up during certain hours of the day.
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        current_time = datetime.now().time()
+        restricted_hours = (21, 6)  # 6am to 8am
+        # Check if the current time is within the restricted window
+        if restricted_hours[0] <= current_time.hour or current_time.hour < restricted_hours[1]:
+            return HttpResponseForbidden('Access restricted between 9 PM and 6 AM. Please try again later.')
+        return self.get_response(request)  # If not restricted, proceed with the request
