@@ -1,6 +1,8 @@
-from datetime import datetime
 from django.http.response import HttpResponseForbidden
+from datetime import datetime, timedelta
 import logging
+
+logger = logging.getLogger(__name__)
 
 class RequestLoggingMiddleware:
     """
@@ -11,8 +13,7 @@ class RequestLoggingMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-        # Set up logging
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(__name__) 
         handler = logging.FileHandler('requests.log')
         handler.setFormatter(logging.Formatter('%(message)s'))
         self.logger.addHandler(handler)
@@ -30,7 +31,7 @@ class RequestLoggingMiddleware:
 
 class RestrictAccessByTimeMiddleware:
     """
-    implement a middleware that restricts access to
+    A middleware that restricts access to
     the messaging up during certain hours of the day.
     """
     def __init__(self, get_response):
@@ -43,3 +44,45 @@ class RestrictAccessByTimeMiddleware:
         if restricted_hours[0] <= current_time.hour or current_time.hour < restricted_hours[1]:
             return HttpResponseForbidden('Access restricted between 9 PM and 6 AM. Please try again later.')
         return self.get_response(request)  # If not restricted, proceed with the request
+    
+
+class OffensiveLanguageMiddleware:
+    """
+    A middleware that limits the number of chat messages a user
+    can send within a certain time window, based on their IP address.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+        # Dictionary to store the message count for each IP address
+        self.messages_count = {}
+        self.messages_limit = 5  # Maximum messages allowed
+        self.time_window = timedelta(minutes=1)  # Time window in seconds
+
+    def __call__(self, request):
+        if request.method == 'POST':
+            ip_address = self.get_client_ip(request)
+            current_time = datetime.now()
+
+            if ip_address not in self.messages_count:
+                self.messages_count[ip_address] = {'count': 0, 'timestamp': current_time}
+            
+            if current_time - self.messages_count[ip_address]['timestamp'] > self.time_window:
+                self.messages_count[ip_address] = {'count': 0, 'timestamp': current_time}
+            self.messages_count[ip_address]['count'] += 1
+            
+            if self.messages_count[ip_address]['count'] > self.messages_limit:
+                logger.warning(f"Rate limit exceeded for IP: {ip_address}")
+                return HttpResponseForbidden('Message limit exceeded. Please wait before sending more messages.')
+        
+        return self.get_response(request)
+    
+
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
