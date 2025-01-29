@@ -17,13 +17,13 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first
-COPY requirements.txt .
+COPY Requirements.txt .
 
 # Install dependencies in steps
 RUN pip install --upgrade pip && \
     pip install wheel && \
     pip install mysqlclient==2.2.6 && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r Requirements.txt
 
 # Copy project files
 COPY . .
